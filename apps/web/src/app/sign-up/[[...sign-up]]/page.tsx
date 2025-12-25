@@ -1,8 +1,63 @@
 "use client";
 
-import { SignUp } from "@clerk/nextjs";
+import Link from "next/link";
+
+// Check if Clerk keys are configured (client-side check)
+const hasClerkKeys = typeof window !== 'undefined' && 
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith("pk_");
 
 export default function SignUpPage() {
+  // In dev mode, show a simple redirect to dashboard
+  if (!hasClerkKeys) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/20 to-background">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
+        <div className="relative z-10 max-w-md w-full mx-4">
+          <div className="rounded-xl border border-border bg-card p-8 shadow-xl">
+            <div className="text-center mb-6">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <svg className="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                  <path d="M2 12h20" />
+                </svg>
+              </div>
+              <h1 className="text-2xl font-bold">Explain My Game</h1>
+              <p className="text-muted-foreground mt-2">Development Mode</p>
+            </div>
+            
+            <div className="rounded-lg bg-yellow-500/10 border border-yellow-500/20 p-4 mb-6">
+              <p className="text-sm text-yellow-200">
+                <strong>Note:</strong> Authentication is not configured. 
+                You can access the app directly in development mode.
+              </p>
+            </div>
+
+            <Link
+              href="/dashboard"
+              className="block w-full rounded-lg bg-primary px-4 py-3 text-center text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Continue to Dashboard
+            </Link>
+
+            <p className="mt-4 text-center text-xs text-muted-foreground">
+              Add Clerk keys to enable authentication
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // With Clerk keys, dynamically import and render Clerk SignUp
+  return <ClerkSignUp />;
+}
+
+// Separate component for Clerk SignUp to enable dynamic import
+function ClerkSignUp() {
+  // Dynamic import of Clerk component
+  const { SignUp } = require("@clerk/nextjs");
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/20 to-background">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
@@ -30,4 +85,3 @@ export default function SignUpPage() {
     </div>
   );
 }
-
