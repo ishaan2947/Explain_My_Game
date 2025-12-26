@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 /**
  * SECURITY NOTE:
@@ -18,6 +19,19 @@ import Link from "next/link";
 // Check if Clerk keys are configured (client-side check)
 const hasClerkKeys = typeof window !== 'undefined' && 
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith("pk_");
+
+// Dynamically import Clerk SignUp only when keys are configured
+const ClerkSignUp = dynamic(
+  () => import("@clerk/nextjs").then((mod) => mod.SignUp),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
+);
 
 export default function SignUpPage() {
   // SECURITY: This bypass is only reachable in development mode
@@ -63,20 +77,12 @@ export default function SignUpPage() {
     );
   }
 
-  // With Clerk keys, dynamically import and render Clerk SignUp
-  return <ClerkSignUp />;
-}
-
-// Separate component for Clerk SignUp to enable dynamic import
-function ClerkSignUp() {
-  // Dynamic import of Clerk component
-  const { SignUp } = require("@clerk/nextjs");
-  
+  // With Clerk keys, render the dynamically imported SignUp component
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/20 to-background">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
       <div className="relative z-10">
-        <SignUp
+        <ClerkSignUp
           appearance={{
             elements: {
               rootBox: "mx-auto",

@@ -20,9 +20,7 @@ class TeamMember(Base):
     """Team membership model."""
 
     __tablename__ = "team_members"
-    __table_args__ = (
-        UniqueConstraint("team_id", "user_id", name="uq_team_member"),
-    )
+    __table_args__ = (UniqueConstraint("team_id", "user_id", name="uq_team_member"),)
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -66,4 +64,3 @@ class TeamMember(Base):
 
     def __repr__(self) -> str:
         return f"<TeamMember team={self.team_id} user={self.user_id} role={self.role}>"
-

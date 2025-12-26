@@ -1,4 +1,5 @@
 """User schemas for API responses."""
+
 from datetime import datetime
 from uuid import UUID
 
@@ -15,4 +16,3 @@ class UserOut(BaseModel):
 
     class Config:
         from_attributes = True
-

@@ -84,4 +84,3 @@ class Report(Base):
 
     def __repr__(self) -> str:
         return f"<Report game={self.game_id} status={self.status}>"
-

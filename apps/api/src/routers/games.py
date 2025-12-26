@@ -23,7 +23,11 @@ from src.schemas import (
     BasketballStatsUpdate,
     BasketballStatsOut,
 )
-from src.services.csv_importer import parse_csv_stats, validate_stats, generate_csv_template
+from src.services.csv_importer import (
+    parse_csv_stats,
+    validate_stats,
+    generate_csv_template,
+)
 
 logger = structlog.get_logger()
 
@@ -323,7 +327,7 @@ async def update_basketball_stats(
 async def get_csv_template() -> str:
     """
     Get a CSV template for importing basketball stats.
-    
+
     Returns a CSV file with headers and one example row.
     """
     return generate_csv_template()
@@ -343,7 +347,7 @@ async def import_stats_from_csv(
 ) -> BasketballGameStats:
     """
     Import basketball stats from a CSV file.
-    
+
     Requires coach or owner role. Only one stats entry per game is allowed.
     The CSV should have at minimum 'points_for' and 'points_against' columns.
     """
@@ -358,7 +362,7 @@ async def import_stats_from_csv(
             status_code=status.HTTP_409_CONFLICT,
             detail="Stats already exist for this game. Delete existing stats first.",
         )
-    
+
     # Read and parse CSV
     try:
         content = await file.read()
@@ -368,7 +372,7 @@ async def import_stats_from_csv(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to read CSV file: {str(e)}",
         )
-    
+
     try:
         parsed_rows = parse_csv_stats(csv_content)
     except ValueError as e:
@@ -376,7 +380,7 @@ async def import_stats_from_csv(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         )
-    
+
     # We only use the first row for single game import
     if len(parsed_rows) > 1:
         logger.warning(
@@ -384,7 +388,7 @@ async def import_stats_from_csv(
             game_id=str(game.id),
             row_count=len(parsed_rows),
         )
-    
+
     try:
         stats_create = validate_stats(parsed_rows[0])
     except ValueError as e:
@@ -392,7 +396,7 @@ async def import_stats_from_csv(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         )
-    
+
     # Create stats
     stats = BasketballGameStats(
         game_id=game.id,
@@ -401,12 +405,12 @@ async def import_stats_from_csv(
     db.add(stats)
     db.commit()
     db.refresh(stats)
-    
+
     logger.info(
         "Basketball stats imported from CSV",
         game_id=str(game.id),
         stats_id=str(stats.id),
         score=f"{stats.points_for}-{stats.points_against}",
     )
-    
+
     return stats

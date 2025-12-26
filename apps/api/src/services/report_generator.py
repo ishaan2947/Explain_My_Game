@@ -1,4 +1,5 @@
 """LLM-powered game report generation service."""
+
 import json
 import time
 
@@ -34,7 +35,9 @@ def _build_stats_summary(stats: BasketballGameStats) -> str:
 
     if stats.three_att > 0:
         three_pct = (stats.three_made / stats.three_att) * 100
-        lines.append(f"Three-Pointers: {stats.three_made}/{stats.three_att} ({three_pct:.1f}%)")
+        lines.append(
+            f"Three-Pointers: {stats.three_made}/{stats.three_att} ({three_pct:.1f}%)"
+        )
 
     if stats.ft_att > 0:
         ft_pct = (stats.ft_made / stats.ft_att) * 100
@@ -42,7 +45,9 @@ def _build_stats_summary(stats: BasketballGameStats) -> str:
 
     # Rebounds
     total_rebounds = stats.rebounds_off + stats.rebounds_def
-    lines.append(f"Rebounds: {total_rebounds} (Off: {stats.rebounds_off}, Def: {stats.rebounds_def})")
+    lines.append(
+        f"Rebounds: {total_rebounds} (Off: {stats.rebounds_off}, Def: {stats.rebounds_def})"
+    )
 
     # Other stats
     lines.append(f"Assists: {stats.assists}")

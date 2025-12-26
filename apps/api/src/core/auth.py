@@ -169,4 +169,3 @@ async def get_optional_user(
 CurrentUser = Annotated[User, Depends(get_current_user)]
 OptionalUser = Annotated[User | None, Depends(get_optional_user)]
 DbSession = Annotated[Session, Depends(get_db)]
-

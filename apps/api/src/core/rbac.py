@@ -285,4 +285,3 @@ GameMemberAccess = Annotated[Game, Depends(require_game_member)]
 GameCoachAccess = Annotated[Game, Depends(require_game_coach)]
 
 ReportAccess = Annotated[Report, Depends(require_report_access)]
-

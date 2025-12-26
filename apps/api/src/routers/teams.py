@@ -1,4 +1,5 @@
 """Teams API router."""
+
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status

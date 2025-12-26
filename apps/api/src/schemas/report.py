@@ -1,4 +1,5 @@
 """Report schemas for API request/response validation."""
+
 from datetime import datetime
 from typing import Literal
 from uuid import UUID
@@ -11,7 +12,9 @@ class KeyInsight(BaseModel):
 
     title: str = Field(..., description="Brief title of the insight")
     description: str = Field(..., description="Detailed description of the insight")
-    evidence: str = Field(..., description="Stats or observations supporting this insight")
+    evidence: str = Field(
+        ..., description="Stats or observations supporting this insight"
+    )
     confidence: Literal["high", "medium", "low"] = Field(
         ..., description="Confidence level based on available data"
     )

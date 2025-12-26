@@ -56,4 +56,3 @@ class Feedback(Base):
 
     def __repr__(self) -> str:
         return f"<Feedback report={self.report_id} rating={self.rating_1_5}>"
-

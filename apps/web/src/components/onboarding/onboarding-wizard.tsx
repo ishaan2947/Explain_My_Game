@@ -356,7 +356,7 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
                 />
               </svg>
             </div>
-            <h2 className="mb-2 text-2xl font-bold">You're All Set!</h2>
+            <h2 className="mb-2 text-2xl font-bold">You&apos;re All Set!</h2>
             <p className="mb-8 text-muted-foreground">
               Your team and first game are ready. Now you can add more stats and generate your first AI coaching report!
             </p>

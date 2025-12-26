@@ -51,4 +51,3 @@ class KnowledgeChunk(Base):
 
     def __repr__(self) -> str:
         return f"<KnowledgeChunk {self.sport}: {self.title[:30]}>"
-

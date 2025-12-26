@@ -82,36 +82,36 @@ def normalize_column_name(col: str) -> str:
 def parse_csv_stats(csv_content: str) -> List[Dict[str, Any]]:
     """
     Parse CSV content and return list of stats dictionaries.
-    
+
     Args:
         csv_content: CSV string content
-        
+
     Returns:
         List of parsed stats dictionaries
-        
+
     Raises:
         ValueError: If CSV is invalid or missing required columns
     """
     # Parse CSV
     reader = csv.DictReader(io.StringIO(csv_content))
-    
+
     if not reader.fieldnames:
         raise ValueError("CSV file is empty or has no headers")
-    
+
     # Map columns
     column_mapping = {}
     for col in reader.fieldnames:
         normalized = normalize_column_name(col)
         if normalized in BASKETBALL_COLUMNS:
             column_mapping[col] = normalized
-    
+
     # Check required columns
     required = {"points_for", "points_against"}
     mapped_cols = set(column_mapping.values())
     missing = required - mapped_cols
     if missing:
         raise ValueError(f"Missing required columns: {', '.join(missing)}")
-    
+
     # Parse rows
     results = []
     for row_num, row in enumerate(reader, start=2):  # Start at 2 (header is 1)
@@ -134,29 +134,29 @@ def parse_csv_stats(csv_content: str) -> List[Dict[str, Any]]:
                     # Use default 0 for required int fields
                     if BASKETBALL_COLUMNS[normalized_col] is int:
                         stats[normalized_col] = 0
-            
+
             # Validate and create schema
             results.append(stats)
-            
+
         except Exception as e:
             raise ValueError(f"Error parsing row {row_num}: {str(e)}")
-    
+
     if not results:
         raise ValueError("CSV file has no data rows")
-    
+
     return results
 
 
 def validate_stats(stats_dict: Dict[str, Any]) -> BasketballStatsCreate:
     """
     Validate stats dictionary and return Pydantic model.
-    
+
     Args:
         stats_dict: Dictionary of stats values
-        
+
     Returns:
         Validated BasketballStatsCreate model
-        
+
     Raises:
         ValueError: If validation fails
     """
@@ -177,9 +177,9 @@ def validate_stats(stats_dict: Dict[str, Any]) -> BasketballStatsCreate:
         "fouls": 0,
         "pace_estimate": None,
     }
-    
+
     full_stats = {**defaults, **stats_dict}
-    
+
     try:
         return BasketballStatsCreate(**full_stats)
     except Exception as e:
@@ -190,7 +190,7 @@ def generate_csv_template() -> str:
     """Generate a CSV template for stats import."""
     headers = [
         "points_for",
-        "points_against", 
+        "points_against",
         "fg_made",
         "fg_att",
         "three_made",
@@ -206,13 +206,29 @@ def generate_csv_template() -> str:
         "fouls",
         "pace_estimate",
     ]
-    
-    example_row = ["85", "78", "32", "65", "8", "22", "13", "18", "12", "28", "22", "8", "5", "14", "18", ""]
-    
+
+    example_row = [
+        "85",
+        "78",
+        "32",
+        "65",
+        "8",
+        "22",
+        "13",
+        "18",
+        "12",
+        "28",
+        "22",
+        "8",
+        "5",
+        "14",
+        "18",
+        "",
+    ]
+
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(headers)
     writer.writerow(example_row)
-    
-    return output.getvalue()
 
+    return output.getvalue()

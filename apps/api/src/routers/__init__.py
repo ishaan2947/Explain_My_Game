@@ -10,4 +10,3 @@ __all__ = [
     "reports_router",
     "users_router",
 ]
-

@@ -67,24 +67,24 @@ def check_rate_limit(client_ip: str) -> bool:
     """
     Simple in-memory rate limiting.
     Returns True if request is allowed, False if rate limited.
-    
+
     TODO: Replace with Redis-based rate limiting for production.
     """
     current_time = time.time()
     window_start = current_time - RATE_LIMIT_WINDOW
-    
+
     if client_ip not in rate_limit_store:
         rate_limit_store[client_ip] = []
-    
+
     # Clean old entries
     rate_limit_store[client_ip] = [
         t for t in rate_limit_store[client_ip] if t > window_start
     ]
-    
+
     # Check limit
     if len(rate_limit_store[client_ip]) >= RATE_LIMIT_REQUESTS:
         return False
-    
+
     # Record request
     rate_limit_store[client_ip].append(current_time)
     return True
@@ -95,7 +95,7 @@ async def lifespan(app: FastAPI):
     """Application lifespan events."""
     # Validate configuration on startup
     validate_config_or_exit()
-    
+
     logger.info("Starting Explain My Game API", environment=ENVIRONMENT)
     yield
     logger.info("Shutting down Explain My Game API")
@@ -147,9 +147,9 @@ async def rate_limit_middleware(request: Request, call_next) -> Response:
     # Skip rate limiting for health check
     if request.url.path == "/health":
         return await call_next(request)
-    
+
     client_ip = request.client.host if request.client else "unknown"
-    
+
     if not check_rate_limit(client_ip):
         logger.warning("Rate limit exceeded", client_ip=client_ip)
         return Response(
@@ -157,7 +157,7 @@ async def rate_limit_middleware(request: Request, call_next) -> Response:
             status_code=429,
             media_type="application/json",
         )
-    
+
     return await call_next(request)
 
 
@@ -165,11 +165,11 @@ async def rate_limit_middleware(request: Request, call_next) -> Response:
 async def logging_middleware(request: Request, call_next) -> Response:
     """Request/response logging middleware."""
     start_time = time.time()
-    
+
     response = await call_next(request)
-    
+
     duration_ms = (time.time() - start_time) * 1000
-    
+
     logger.info(
         "Request processed",
         method=request.method,
@@ -177,13 +177,14 @@ async def logging_middleware(request: Request, call_next) -> Response:
         status_code=response.status_code,
         duration_ms=round(duration_ms, 2),
     )
-    
+
     return response
 
 
 # Response models
 class HealthResponse(BaseModel):
     """Health check response."""
+
     status: str
     environment: str
     version: str
@@ -191,6 +192,7 @@ class HealthResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     """Standard error response."""
+
     detail: str
     error_code: str | None = None
 
@@ -237,4 +239,3 @@ async def root() -> dict[str, Any]:
         "docs": "/docs" if ENVIRONMENT == "development" else None,
         "health": "/health",
     }
-

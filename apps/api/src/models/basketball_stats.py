@@ -107,4 +107,3 @@ class BasketballGameStats(Base):
 
     def __repr__(self) -> str:
         return f"<BasketballStats {self.points_for}-{self.points_against}>"
-

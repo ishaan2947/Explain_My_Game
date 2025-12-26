@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -28,11 +28,7 @@ export default function TeamDetailPage() {
   });
   const [formError, setFormError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, [teamId]);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     try {
       const [teamData, gamesData] = await Promise.all([
         getTeam(teamId),
@@ -46,7 +42,11 @@ export default function TeamDetailPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [teamId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   async function handleCreateGame(e: React.FormEvent) {
     e.preventDefault();

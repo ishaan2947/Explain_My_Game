@@ -1,7 +1,13 @@
 # Core module
 from src.core.config import get_settings, Settings
 from src.core.database import get_db, Base, engine, SessionLocal
-from src.core.auth import get_current_user, get_optional_user, CurrentUser, OptionalUser, DbSession
+from src.core.auth import (
+    get_current_user,
+    get_optional_user,
+    CurrentUser,
+    OptionalUser,
+    DbSession,
+)
 from src.core.security import AuthenticationError, AuthorizationError
 from src.core.exceptions import (
     AppException,
@@ -63,4 +69,3 @@ __all__ = [
     "GameCoachAccess",
     "ReportAccess",
 ]
-

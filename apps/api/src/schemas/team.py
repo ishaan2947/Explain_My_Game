@@ -1,4 +1,5 @@
 """Team schemas for API request/response validation."""
+
 from datetime import datetime
 from typing import Literal
 from uuid import UUID
@@ -18,7 +19,9 @@ class TeamCreate(BaseModel):
 class TeamUpdate(BaseModel):
     """Schema for updating a team."""
 
-    name: str | None = Field(None, min_length=1, max_length=100, description="Team name")
+    name: str | None = Field(
+        None, min_length=1, max_length=100, description="Team name"
+    )
 
 
 class TeamOut(BaseModel):

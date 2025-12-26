@@ -17,9 +17,10 @@ export function useAuthToken() {
     
     // Dynamic import Clerk only when configured
     try {
-      const { useAuth } = await import("@clerk/nextjs");
-      // This won't work in a callback, so we need a different approach
-      // For now, just return dev token if Clerk isn't working
+      // Note: useAuth hook can't be called inside a callback
+      // For actual Clerk integration, use Clerk's getToken in a different pattern
+      // For now, just return dev token
+      await import("@clerk/nextjs");
       return DEV_TOKEN;
     } catch {
       return DEV_TOKEN;

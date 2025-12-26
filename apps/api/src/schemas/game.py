@@ -1,4 +1,5 @@
 """Game schemas for API request/response validation."""
+
 from datetime import date, datetime
 from uuid import UUID
 

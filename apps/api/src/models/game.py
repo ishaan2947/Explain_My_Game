@@ -71,4 +71,3 @@ class Game(Base):
 
     def __repr__(self) -> str:
         return f"<Game vs {self.opponent_name} on {self.game_date}>"
-

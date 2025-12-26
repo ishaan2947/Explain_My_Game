@@ -86,7 +86,9 @@ def register_exception_handlers(app: FastAPI) -> None:
     """Register custom exception handlers with the FastAPI app."""
 
     @app.exception_handler(AppException)
-    async def app_exception_handler(request: Request, exc: AppException) -> JSONResponse:
+    async def app_exception_handler(
+        request: Request, exc: AppException
+    ) -> JSONResponse:
         logger.warning(
             "Application exception",
             error_code=exc.error_code,
@@ -137,4 +139,3 @@ def register_exception_handlers(app: FastAPI) -> None:
                 "error_code": exc.error_code,
             },
         )
-

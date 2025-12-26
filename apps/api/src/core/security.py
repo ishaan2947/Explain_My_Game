@@ -139,4 +139,3 @@ def extract_user_email(payload: dict[str, Any]) -> str | None:
             return primary.get("email_address")
 
     return None
-

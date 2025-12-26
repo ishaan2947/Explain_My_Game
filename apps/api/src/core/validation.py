@@ -15,7 +15,7 @@ logger = structlog.get_logger()
 def validate_config() -> List[str]:
     """
     Validate configuration settings.
-    
+
     Returns:
         List of error messages (empty if valid)
     """
@@ -54,7 +54,9 @@ def validate_config() -> List[str]:
                 "Authentication bypass is NOT allowed in production environments."
             )
         elif not settings.clerk_publishable_key.startswith("pk_"):
-            errors.append("CLERK_PUBLISHABLE_KEY appears invalid (should start with 'pk_')")
+            errors.append(
+                "CLERK_PUBLISHABLE_KEY appears invalid (should start with 'pk_')"
+            )
 
         # Database should not be localhost in production
         if "localhost" in settings.database_url or "127.0.0.1" in settings.database_url:
@@ -68,7 +70,7 @@ def validate_config() -> List[str]:
     else:
         if not settings.openai_api_key:
             warnings.append("OPENAI_API_KEY not set - AI reports will fail")
-        
+
         if not settings.clerk_secret_key:
             warnings.append("CLERK_SECRET_KEY not set - using dev auth bypass")
 
@@ -82,18 +84,18 @@ def validate_config() -> List[str]:
 def validate_config_or_exit() -> None:
     """
     Validate configuration and exit if invalid.
-    
+
     Call this at application startup.
     """
     settings = get_settings()
-    
+
     logger.info(
         "Validating configuration",
         environment=settings.environment,
     )
-    
+
     errors = validate_config()
-    
+
     if errors:
         logger.error(
             "Configuration validation failed",
@@ -103,8 +105,10 @@ def validate_config_or_exit() -> None:
         print("\n❌ Configuration errors:", file=sys.stderr)
         for error in errors:
             print(f"  - {error}", file=sys.stderr)
-        print("\nPlease set the required environment variables and restart.", file=sys.stderr)
+        print(
+            "\nPlease set the required environment variables and restart.",
+            file=sys.stderr,
+        )
         sys.exit(1)
-    
-    logger.info("Configuration validation passed")
 
+    logger.info("Configuration validation passed")

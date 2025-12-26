@@ -34,17 +34,17 @@ DEV_TOKEN_PREFIX = "dev_"
 def is_dev_token(token: str) -> bool:
     """
     Check if the token is a development bypass token.
-    
+
     SECURITY: This ONLY returns True when:
     1. ENVIRONMENT=development (NOT production or staging)
     2. Token starts with "dev_" prefix
-    
+
     In production, this always returns False, ensuring no auth bypass is possible.
     """
     # SECURITY: Strict check - only allow in development environment
     if not settings.is_development:
         return False
-    
+
     return token.startswith(DEV_TOKEN_PREFIX)
 
 
@@ -62,5 +62,4 @@ def extract_dev_user_id(token: str) -> str | None:
         return None
 
     # Remove the "dev_" prefix to get the clerk_user_id
-    return token[len(DEV_TOKEN_PREFIX):]
-
+    return token[len(DEV_TOKEN_PREFIX) :]

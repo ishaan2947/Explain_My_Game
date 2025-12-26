@@ -35,19 +35,19 @@ def _report_to_out(report: Report) -> ReportOut:
     """Convert a Report model to ReportOut schema."""
     # Extract data from report_json if available
     report_json = report.report_json or {}
-    
+
     key_insights = []
     for insight in report_json.get("key_insights", []):
         key_insights.append(KeyInsight(**insight))
-    
+
     action_items = []
     for item in report_json.get("action_items", []):
         action_items.append(ActionItem(**item))
-    
+
     questions = []
     for q in report_json.get("questions_for_next_game", []):
         questions.append(QuestionForNextGame(**q))
-    
+
     return ReportOut(
         id=report.id,
         game_id=report.game_id,
@@ -193,11 +193,7 @@ async def submit_feedback(
     Requires team membership. One feedback per user per report.
     """
     # Check for existing feedback (one per report)
-    existing = (
-        db.query(Feedback)
-        .filter(Feedback.report_id == report.id)
-        .first()
-    )
+    existing = db.query(Feedback).filter(Feedback.report_id == report.id).first()
     if existing:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -236,7 +232,7 @@ async def export_report_pdf(
 ) -> Response:
     """
     Export a report as a PDF file.
-    
+
     Requires team membership.
     """
     # Get game and stats
@@ -246,7 +242,7 @@ async def export_report_pdf(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Game not found",
         )
-    
+
     stats = (
         db.query(BasketballGameStats)
         .filter(BasketballGameStats.game_id == game.id)
@@ -257,7 +253,7 @@ async def export_report_pdf(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Cannot generate PDF without game stats",
         )
-    
+
     # Generate PDF
     try:
         pdf_bytes = generate_report_pdf(game, stats, report)
@@ -271,22 +267,20 @@ async def export_report_pdf(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate PDF: {str(e)}",
         )
-    
+
     # Create filename
     game_date_str = game.game_date.strftime("%Y-%m-%d")
     opponent_slug = game.opponent_name.replace(" ", "_")[:20]
     filename = f"game_report_{game_date_str}_{opponent_slug}.pdf"
-    
+
     logger.info(
         "PDF exported",
         report_id=str(report.id),
         filename=filename,
     )
-    
+
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={
-            "Content-Disposition": f'attachment; filename="{filename}"'
-        },
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )

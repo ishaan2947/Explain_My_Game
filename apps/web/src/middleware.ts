@@ -36,7 +36,7 @@ if (isProduction && !hasClerkKeys) {
   );
 }
 
-export function middleware(request: NextRequest) {
+export function middleware(_request: NextRequest) {
   // SECURITY: Only allow auth bypass in development mode
   // In production, hasClerkKeys must be true (enforced above)
   if (!hasClerkKeys && !isProduction) {

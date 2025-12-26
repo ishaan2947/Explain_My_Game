@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -319,11 +319,7 @@ export default function GameDetailPage() {
     fouls: 0,
   });
 
-  useEffect(() => {
-    loadData();
-  }, [gameId]);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     try {
       const gameData = await getGame(gameId);
       setGame(gameData);
@@ -349,7 +345,11 @@ export default function GameDetailPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [gameId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   async function handleSaveStats(e: React.FormEvent) {
     e.preventDefault();

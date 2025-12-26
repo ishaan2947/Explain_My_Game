@@ -19,7 +19,9 @@ class Settings(BaseSettings):
     )
 
     # Database
-    database_url: str = "postgresql://emg_user:emg_password@localhost:5432/explain_my_game"
+    database_url: str = (
+        "postgresql://emg_user:emg_password@localhost:5432/explain_my_game"
+    )
 
     # OpenAI
     openai_api_key: str = ""
@@ -57,4 +59,3 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Get cached settings instance."""
     return Settings()
-
