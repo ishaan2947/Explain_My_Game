@@ -1,5 +1,4 @@
 """Reports API router."""
-from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import Response
@@ -13,7 +12,7 @@ from src.core import (
     GameCoachAccess,
     ReportAccess,
 )
-from src.models import Game, Report, Feedback, BasketballGameStats, TeamMember
+from src.models import Game, Report, Feedback, BasketballGameStats
 from src.schemas import (
     ReportOut,
     GenerateReportRequest,

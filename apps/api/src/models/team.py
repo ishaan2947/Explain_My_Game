@@ -46,16 +46,16 @@ class Team(Base):
     )
 
     # Relationships
-    owner: Mapped["User"] = relationship(
+    owner: Mapped["User"] = relationship(  # noqa: F821
         "User",
         back_populates="owned_teams",
     )
-    members: Mapped[list["TeamMember"]] = relationship(
+    members: Mapped[list["TeamMember"]] = relationship(  # noqa: F821
         "TeamMember",
         back_populates="team",
         cascade="all, delete-orphan",
     )
-    games: Mapped[list["Game"]] = relationship(
+    games: Mapped[list["Game"]] = relationship(  # noqa: F821
         "Game",
         back_populates="team",
         cascade="all, delete-orphan",

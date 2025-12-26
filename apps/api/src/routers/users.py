@@ -7,7 +7,7 @@ from src.core import (
     CurrentUser,
     DbSession,
 )
-from src.models import User, Team, TeamMember, Game, BasketballGameStats, Report, Feedback
+from src.models import Team, TeamMember, Game, BasketballGameStats, Report
 
 logger = structlog.get_logger()
 
@@ -192,7 +192,7 @@ async def export_user_data(
         "user": {
             "id": str(current_user.id),
             "email": current_user.email,
-            "clerk_id": current_user.clerk_id,
+            "clerk_id": current_user.clerk_user_id,
             "created_at": current_user.created_at.isoformat(),
         },
         "teams": teams_data,

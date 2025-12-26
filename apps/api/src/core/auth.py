@@ -2,7 +2,6 @@
 Authentication dependencies for FastAPI routes.
 """
 
-import uuid
 from typing import Annotated
 
 from fastapi import Depends, Header, HTTPException, status

@@ -53,17 +53,17 @@ class Game(Base):
     )
 
     # Relationships
-    team: Mapped["Team"] = relationship(
+    team: Mapped["Team"] = relationship(  # noqa: F821
         "Team",
         back_populates="games",
     )
-    basketball_stats: Mapped["BasketballGameStats | None"] = relationship(
+    basketball_stats: Mapped["BasketballGameStats | None"] = relationship(  # noqa: F821
         "BasketballGameStats",
         back_populates="game",
         uselist=False,
         cascade="all, delete-orphan",
     )
-    reports: Mapped[list["Report"]] = relationship(
+    reports: Mapped[list["Report"]] = relationship(  # noqa: F821
         "Report",
         back_populates="game",
         cascade="all, delete-orphan",

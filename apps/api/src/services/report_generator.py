@@ -1,7 +1,6 @@
 """LLM-powered game report generation service."""
 import json
 import time
-from typing import Any
 
 from openai import OpenAI
 from pydantic import ValidationError

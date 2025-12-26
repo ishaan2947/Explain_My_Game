@@ -69,7 +69,7 @@ class BasketballGameStats(Base):
     )
 
     # Relationships
-    game: Mapped["Game"] = relationship(
+    game: Mapped["Game"] = relationship(  # noqa: F821
         "Game",
         back_populates="basketball_stats",
     )

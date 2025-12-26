@@ -55,11 +55,11 @@ class TeamMember(Base):
     )
 
     # Relationships
-    team: Mapped["Team"] = relationship(
+    team: Mapped["Team"] = relationship(  # noqa: F821
         "Team",
         back_populates="members",
     )
-    user: Mapped["User"] = relationship(
+    user: Mapped["User"] = relationship(  # noqa: F821
         "User",
         back_populates="team_memberships",
     )

@@ -49,7 +49,7 @@ class Feedback(Base):
     )
 
     # Relationships
-    report: Mapped["Report"] = relationship(
+    report: Mapped["Report"] = relationship(  # noqa: F821
         "Report",
         back_populates="feedback",
     )

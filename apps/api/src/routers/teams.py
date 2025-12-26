@@ -9,7 +9,6 @@ from src.core import (
     CurrentUser,
     DbSession,
     TeamMemberAccess,
-    TeamCoachAccess,
     TeamOwnerAccess,
 )
 from src.models import Team, TeamMember, User

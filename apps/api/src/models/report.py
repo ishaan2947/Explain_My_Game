@@ -62,11 +62,11 @@ class Report(Base):
     )
 
     # Relationships
-    game: Mapped["Game"] = relationship(
+    game: Mapped["Game"] = relationship(  # noqa: F821
         "Game",
         back_populates="reports",
     )
-    feedback: Mapped[list["Feedback"]] = relationship(
+    feedback: Mapped[list["Feedback"]] = relationship(  # noqa: F821
         "Feedback",
         back_populates="report",
         cascade="all, delete-orphan",

@@ -4,7 +4,6 @@ Knowledge chunk model for RAG (future use).
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any
 
 from sqlalchemy import DateTime, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID

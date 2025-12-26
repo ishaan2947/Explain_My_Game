@@ -41,12 +41,12 @@ class User(Base):
     )
 
     # Relationships
-    owned_teams: Mapped[list["Team"]] = relationship(
+    owned_teams: Mapped[list["Team"]] = relationship(  # noqa: F821
         "Team",
         back_populates="owner",
         cascade="all, delete-orphan",
     )
-    team_memberships: Mapped[list["TeamMember"]] = relationship(
+    team_memberships: Mapped[list["TeamMember"]] = relationship(  # noqa: F821
         "TeamMember",
         back_populates="user",
         cascade="all, delete-orphan",

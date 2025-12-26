@@ -3,7 +3,6 @@
 import csv
 import io
 from typing import List, Dict, Any
-from datetime import date, datetime
 
 import structlog
 
@@ -133,7 +132,7 @@ def parse_csv_stats(csv_content: str) -> List[Dict[str, Any]]:
                         stats[normalized_col] = expected_type(value)
                 else:
                     # Use default 0 for required int fields
-                    if BASKETBALL_COLUMNS[normalized_col] == int:
+                    if BASKETBALL_COLUMNS[normalized_col] is int:
                         stats[normalized_col] = 0
             
             # Validate and create schema

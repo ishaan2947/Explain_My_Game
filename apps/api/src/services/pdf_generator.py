@@ -1,9 +1,5 @@
 """PDF generation service for game reports."""
 
-import io
-from datetime import datetime
-from typing import Optional
-
 from fpdf import FPDF
 
 import structlog

@@ -1,5 +1,4 @@
 """Games API router."""
-from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status, UploadFile, File
 from fastapi.responses import PlainTextResponse
@@ -14,7 +13,7 @@ from src.core import (
     GameMemberAccess,
     GameCoachAccess,
 )
-from src.models import Game, Team, TeamMember, BasketballGameStats, Report
+from src.models import Game, BasketballGameStats, Report
 from src.schemas import (
     GameCreate,
     GameUpdate,

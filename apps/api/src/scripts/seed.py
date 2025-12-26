@@ -16,7 +16,7 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
-from src.core.database import SessionLocal, engine
+from src.core.database import SessionLocal
 from src.models import (
     User,
     Team,
