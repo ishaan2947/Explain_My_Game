@@ -146,4 +146,31 @@ export async function generateReport(
   }, token);
 }
 
+// Feedback
+export interface FeedbackInput {
+  rating_1_5: number;
+  accurate_bool?: boolean;
+  missing_text?: string;
+}
+
+export interface Feedback {
+  id: string;
+  report_id: string;
+  rating_1_5: number;
+  accurate_bool: boolean | null;
+  missing_text: string | null;
+  created_at: string;
+}
+
+export async function submitFeedback(
+  reportId: string, 
+  input: FeedbackInput, 
+  token?: string | null
+): Promise<Feedback> {
+  return fetchApi<Feedback>(`/reports/${reportId}/feedback`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  }, token);
+}
+
 export { ApiError };

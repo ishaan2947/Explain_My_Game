@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -13,10 +14,60 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Explain My Game",
+  title: {
+    default: "Explain My Game - AI Basketball Coaching Insights",
+    template: "%s | Explain My Game",
+  },
   description:
-    "Turn basketball game stats into clear coaching insights using AI",
-  keywords: ["basketball", "coaching", "analytics", "AI", "sports"],
+    "Transform your basketball game stats into actionable coaching insights with AI. Get post-game reports, key insights, action items, and practice focus areas.",
+  keywords: [
+    "basketball",
+    "coaching",
+    "analytics",
+    "AI",
+    "sports",
+    "game analysis",
+    "basketball stats",
+    "coaching insights",
+    "post-game report",
+    "basketball training",
+  ],
+  authors: [{ name: "Explain My Game" }],
+  creator: "Explain My Game",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://explainmygame.com",
+    title: "Explain My Game - AI Basketball Coaching Insights",
+    description:
+      "Transform your basketball game stats into actionable coaching insights with AI.",
+    siteName: "Explain My Game",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Explain My Game - AI Basketball Coaching Insights",
+    description:
+      "Transform your basketball game stats into actionable coaching insights with AI.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f97316",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 // Check if Clerk is properly configured with actual keys
@@ -30,26 +81,22 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Only import and use ClerkProvider if keys are configured
-  if (hasClerkKeys) {
-    const { ClerkProvider } = await import("@clerk/nextjs");
-    return (
-      <ClerkProvider>
-        <html lang="en" suppressHydrationWarning className="dark">
-          <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}>
-            {children}
-          </body>
-        </html>
-      </ClerkProvider>
-    );
-  }
-
-  // Without Clerk keys, render without ClerkProvider
-  return (
+  const content = (
     <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}>
+      <body
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}
+      >
         {children}
+        <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );
+
+  // Only import and use ClerkProvider if keys are configured
+  if (hasClerkKeys) {
+    const { ClerkProvider } = await import("@clerk/nextjs");
+    return <ClerkProvider>{content}</ClerkProvider>;
+  }
+
+  return content;
 }
