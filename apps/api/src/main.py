@@ -8,6 +8,7 @@ import time
 from contextlib import asynccontextmanager
 from typing import Any
 
+import sentry_sdk
 import structlog
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,7 +18,19 @@ from sqlalchemy import text
 from src.core.config import get_settings
 from src.core.database import engine
 from src.core.exceptions import register_exception_handlers
-from src.routers import teams_router, games_router, reports_router
+from src.core.validation import validate_config_or_exit
+from src.routers import teams_router, games_router, reports_router, users_router
+
+# Initialize Sentry
+settings = get_settings()
+if settings.sentry_dsn:
+    sentry_sdk.init(
+        dsn=settings.sentry_dsn,
+        environment=settings.environment,
+        traces_sample_rate=settings.sentry_traces_sample_rate,
+        profiles_sample_rate=0.1,
+        enable_tracing=True,
+    )
 
 # Configure structured logging
 structlog.configure(
@@ -80,6 +93,9 @@ def check_rate_limit(client_ip: str) -> bool:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
+    # Validate configuration on startup
+    validate_config_or_exit()
+    
     logger.info("Starting Explain My Game API", environment=ENVIRONMENT)
     yield
     logger.info("Shutting down Explain My Game API")
@@ -122,6 +138,7 @@ register_exception_handlers(app)
 app.include_router(teams_router)
 app.include_router(games_router)
 app.include_router(reports_router)
+app.include_router(users_router)
 
 
 @app.middleware("http")

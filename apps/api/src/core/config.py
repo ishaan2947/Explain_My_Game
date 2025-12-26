@@ -40,6 +40,10 @@ class Settings(BaseSettings):
     # Frontend URL (for CORS)
     frontend_url: str = "http://localhost:3000"
 
+    # Sentry Error Tracking
+    sentry_dsn: str = ""
+    sentry_traces_sample_rate: float = 0.1
+
     @property
     def is_development(self) -> bool:
         return self.environment == "development"

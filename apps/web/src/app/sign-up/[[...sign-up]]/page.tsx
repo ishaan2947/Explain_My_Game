@@ -2,12 +2,26 @@
 
 import Link from "next/link";
 
+/**
+ * SECURITY NOTE:
+ * --------------
+ * The "Development Mode" bypass shown below is ONLY available when:
+ * 1. NODE_ENV=development (NOT production)
+ * 2. Clerk keys are not configured
+ * 
+ * In production, middleware.ts and layout.tsx enforce that Clerk keys
+ * must be configured. The build will FAIL if auth is not set up.
+ * 
+ * This bypass exists solely for local development convenience.
+ */
+
 // Check if Clerk keys are configured (client-side check)
 const hasClerkKeys = typeof window !== 'undefined' && 
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith("pk_");
 
 export default function SignUpPage() {
-  // In dev mode, show a simple redirect to dashboard
+  // SECURITY: This bypass is only reachable in development mode
+  // Production builds fail if Clerk keys are missing (see middleware.ts)
   if (!hasClerkKeys) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/20 to-background">

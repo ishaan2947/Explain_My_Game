@@ -2,6 +2,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import Response
 
 import structlog
 
@@ -24,6 +25,7 @@ from src.schemas import (
     QuestionForNextGame,
 )
 from src.services.report_generator import generate_game_report
+from src.services.pdf_generator import generate_report_pdf
 
 logger = structlog.get_logger()
 
@@ -221,3 +223,71 @@ async def submit_feedback(
     )
 
     return feedback
+
+
+@router.get(
+    "/reports/{report_id}/pdf",
+    response_class=Response,
+    summary="Export report as PDF",
+)
+async def export_report_pdf(
+    report: ReportAccess,
+    current_user: CurrentUser,
+    db: DbSession,
+) -> Response:
+    """
+    Export a report as a PDF file.
+    
+    Requires team membership.
+    """
+    # Get game and stats
+    game = db.query(Game).filter(Game.id == report.game_id).first()
+    if not game:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Game not found",
+        )
+    
+    stats = (
+        db.query(BasketballGameStats)
+        .filter(BasketballGameStats.game_id == game.id)
+        .first()
+    )
+    if not stats:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot generate PDF without game stats",
+        )
+    
+    # Generate PDF
+    try:
+        pdf_bytes = generate_report_pdf(game, stats, report)
+    except Exception as e:
+        logger.error(
+            "Failed to generate PDF",
+            report_id=str(report.id),
+            error=str(e),
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate PDF: {str(e)}",
+        )
+    
+    # Create filename
+    game_date_str = game.game_date.strftime("%Y-%m-%d")
+    opponent_slug = game.opponent_name.replace(" ", "_")[:20]
+    filename = f"game_report_{game_date_str}_{opponent_slug}.pdf"
+    
+    logger.info(
+        "PDF exported",
+        report_id=str(report.id),
+        filename=filename,
+    )
+    
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"'
+        },
+    )

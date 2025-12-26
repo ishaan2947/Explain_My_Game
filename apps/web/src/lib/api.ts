@@ -173,4 +173,38 @@ export async function submitFeedback(
   }, token);
 }
 
+// User
+export interface UserInfo {
+  id: string;
+  email: string;
+  clerk_id: string | null;
+  created_at: string;
+  team_count: number;
+  owned_teams_count: number;
+}
+
+export async function getCurrentUser(token?: string | null): Promise<UserInfo> {
+  return fetchApi<UserInfo>("/users/me", {}, token);
+}
+
+export async function deleteAccount(token?: string | null): Promise<void> {
+  await fetchApi<void>("/users/me", {
+    method: "DELETE",
+  }, token);
+}
+
+export async function exportUserData(token?: string | null): Promise<any> {
+  return fetchApi<any>("/users/me/data-export", {}, token);
+}
+
+// PDF Export
+export function getReportPdfUrl(reportId: string): string {
+  return `${API_URL}/reports/${reportId}/pdf`;
+}
+
+// CSV Template
+export function getCsvTemplateUrl(): string {
+  return `${API_URL}/stats/csv-template`;
+}
+
 export { ApiError };

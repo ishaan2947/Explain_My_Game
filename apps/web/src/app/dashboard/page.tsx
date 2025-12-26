@@ -5,7 +5,8 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { getTeams, getGames } from "@/lib/api";
 import type { Team, Game } from "@/types/api";
-import { DashboardSkeleton, StatCardSkeleton, ListItemSkeleton } from "@/components/ui/skeleton";
+import { DashboardSkeleton } from "@/components/ui/skeleton";
+import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 
 function StatCard({
   title,
@@ -124,12 +125,21 @@ export default function DashboardPage() {
   const [recentGames, setRecentGames] = useState<(Game & { teamName: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       try {
         const teamsData = await getTeams();
         setTeams(teamsData);
+        
+        // Show onboarding if no teams and hasn't been dismissed
+        if (teamsData.length === 0) {
+          const hasSeenOnboarding = localStorage.getItem("emg_onboarding_complete");
+          if (!hasSeenOnboarding) {
+            setShowOnboarding(true);
+          }
+        }
 
         // Get recent games from all teams
         const allGames: (Game & { teamName: string })[] = [];
@@ -162,6 +172,18 @@ export default function DashboardPage() {
     loadData();
   }, []);
 
+  function handleOnboardingComplete() {
+    localStorage.setItem("emg_onboarding_complete", "true");
+    setShowOnboarding(false);
+    // Reload data after onboarding
+    window.location.reload();
+  }
+
+  function handleOnboardingSkip() {
+    localStorage.setItem("emg_onboarding_complete", "true");
+    setShowOnboarding(false);
+  }
+
   if (loading) return <DashboardSkeleton />;
 
   const gamesWithReports = recentGames.filter((g) => g.has_report).length;
@@ -170,6 +192,13 @@ export default function DashboardPage() {
 
   return (
     <div className="p-4 md:p-8">
+      {/* Onboarding Wizard */}
+      {showOnboarding && (
+        <OnboardingWizard
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold md:text-3xl">Dashboard</h1>
